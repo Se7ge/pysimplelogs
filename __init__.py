@@ -1,4 +1,5 @@
 from pysimplelogs import Simplelog, Transplant
+from pysimplelogs import URL
 
-simplelog = Simplelog("http://127.0.0.1:5000/")
+simplelog = Simplelog(URL)
 simplelog.init_levels()
