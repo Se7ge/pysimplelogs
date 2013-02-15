@@ -9,7 +9,17 @@ import os
 from config import SLEEP_TIME, NUMBER_OF_ATTEMPTS, CONNECTION_TIMEOUT
 
 
-class Worker:
+class Worker(object):
+    """Worker for multiprocessing. It can send new log entry to simplelogs server.
+
+    Keyword arguments:
+    owner -- user or system, who try to create entry (required).
+    level -- message level: info, warning, error, etc.
+    data -- all other information (required).
+    url -- simplelogs server URI.
+    tags -- tags for current entry.
+
+    """
     def __init__(self, level, owner, data, url, tags=[]):
         self.level = level
         self.owner = owner
@@ -18,6 +28,13 @@ class Worker:
         self.url = url
 
     def send(self):
+        """ New entry creator.
+
+        This method creating new entry and trying to send it to remote server.
+        It use 3 params SLEEP_TIME, NUMBER_OF_ATTEMPTS, CONNECTION_TIMEOUT from config-fle.
+        For more detail about this params, please, read comment in config.py/
+
+        """
         url = self.url + '/api/entry/'
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         data_for_posting = {'level': self.level,
@@ -39,8 +56,19 @@ class Worker:
         return request
 
 
-class Transplant:
-    def __init__(self, method, host, url, method_name=None):
+class Transplant(object):
+    """Class-methods fabric.
+
+    Keyword arguments:
+    host -- сlass, which will be transplanted.
+    method -- function or static method that will be new method in 'host'.
+    method_name -- by default the new class-method will have the same name as method,
+     if you want to change it, you should specify 'method_name' (not required)
+
+    This class can create any method with any name based on other class method or function in any class.
+
+    """
+    def __init__(self, method, host, url=None, method_name=None):
         self.host = host
         self.method = method
         self.url = url
@@ -54,6 +82,7 @@ class Transplant:
 
 
 def get_levels_list(url):
+    """Returns levels from server or default-list if server is unavailable."""
     try:
         levels = json.loads(requests.get(os.path.join(url + "/api/level/"), timeout=CONNECTION_TIMEOUT).content)
     except:
@@ -61,7 +90,16 @@ def get_levels_list(url):
     return levels
 
 
-class Simplelog:
+class Simplelog(object):
+    """Basic class for lib users.
+
+    Keyword arguments:
+    url -- simplelogs server URI.
+
+    Instance of this class is transplanting to them self methods from http://hostname/api/level/ list
+     and give to lib users all of message levels as a class methods.
+
+    """
     def __init__(self, url):
         self.url = url
         self.init_levels()
@@ -72,6 +110,7 @@ class Simplelog:
             Transplant(send, Simplelog, url=self.url, method_name=level)
 
 def send(self, owner, data, tags=[]):
+    """Creating worker for sending message as a new process and return."""
     worker = Worker(self.method_name, owner, data, self.url, tags)
     #TODO Add queue.
     multiprocessing.Process(target=worker.send).start()
