@@ -109,6 +109,7 @@ class Simplelog(object):
         for level in levels:
             Transplant(send, Simplelog, url=self.url, method_name=level)
 
+
 def send(self, owner, data, tags=[]):
     """Creating worker for sending message as a new process and return."""
     worker = Worker(self.method_name, owner, data, self.url, tags)
