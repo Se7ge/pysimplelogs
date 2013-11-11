@@ -109,6 +109,65 @@ class Simplelog(object):
         for level in levels:
             Transplant(send, Simplelog, url=self.url, method_name=level)
 
+    def get_owners(self):
+        response = requests.get(os.path.join(self.url + "/api/owners/"), timeout=CONNECTION_TIMEOUT)
+        if response.status_code == requests.codes.ok:
+            try:
+                result = response.json()
+            except ValueError, e:
+                print e
+            else:
+                return result
+        return None
+
+    def get_list(self, **kwargs):
+        params = dict()
+        if kwargs:
+            if 'find' in kwargs:
+                params['find'] = kwargs['find']
+            if 'sort' in kwargs:
+                params['sort'] = kwargs['sort']
+            if 'limit' in kwargs:
+                params['limit'] = kwargs['limit']
+            response = requests.post(os.path.join(self.url + "/api/list/"),
+                                     headers={'content-type': 'application/json'},
+                                     data=json.dumps(params),
+                                     timeout=CONNECTION_TIMEOUT)
+        else:
+            response = requests.get(os.path.join(self.url + "/api/list/"), timeout=CONNECTION_TIMEOUT)
+        if response.status_code == requests.codes.ok:
+            try:
+                result = response.json()
+            except ValueError, e:
+                print e
+            else:
+                return result
+        return None
+
+    def count(self, **kwargs):
+        params = dict()
+        if kwargs:
+            if 'find' in kwargs:
+                params['find'] = kwargs['find']
+            if 'sort' in kwargs:
+                params['sort'] = kwargs['sort']
+            if 'limit' in kwargs:
+                params['limit'] = kwargs['limit']
+            response = requests.post(os.path.join(self.url + "/api/count/"),
+                                     headers={'content-type': 'application/json'},
+                                     data=json.dumps(params),
+                                     timeout=CONNECTION_TIMEOUT)
+        else:
+            response = requests.get(os.path.join(self.url + "/api/count/"), timeout=CONNECTION_TIMEOUT)
+        if response.status_code == requests.codes.ok:
+            try:
+                result = response.json()
+            except ValueError, e:
+                print e
+            else:
+                return result
+        return None
+
 
 def send(self, owner, data, tags=[]):
     """Creating worker for sending message as a new process and return."""
