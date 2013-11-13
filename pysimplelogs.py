@@ -134,7 +134,9 @@ class Simplelog(object):
                                      data=json.dumps(params),
                                      timeout=CONNECTION_TIMEOUT)
         else:
-            response = requests.get(os.path.join(self.url + "/api/list/"), timeout=CONNECTION_TIMEOUT)
+            response = requests.get(os.path.join(self.url + "/api/list/"),
+                                    headers={'content-type': 'application/json'},
+                                    timeout=CONNECTION_TIMEOUT)
         if response.status_code == requests.codes.ok:
             try:
                 result = response.json()
@@ -158,7 +160,9 @@ class Simplelog(object):
                                      data=json.dumps(params),
                                      timeout=CONNECTION_TIMEOUT)
         else:
-            response = requests.get(os.path.join(self.url + "/api/count/"), timeout=CONNECTION_TIMEOUT)
+            response = requests.get(os.path.join(self.url + "/api/count/"),
+                                    headers={'content-type': 'application/json'},
+                                    timeout=CONNECTION_TIMEOUT)
         if response.status_code == requests.codes.ok:
             try:
                 result = response.json()
