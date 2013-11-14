@@ -5,8 +5,19 @@ import requests
 import time
 import json
 import os
+from datetime import datetime, date
 
 from config import SLEEP_TIME, NUMBER_OF_ATTEMPTS, CONNECTION_TIMEOUT
+
+
+class APIEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime("%Y-%m-%d %H:%m:%s")
+        elif isinstance(obj, date):
+            return date.strftime(obj, "%Y-%m-%d")
+        else:
+            return super(APIEncoder, self).default(obj)
 
 
 class Worker(object):
@@ -108,6 +119,69 @@ class Simplelog(object):
         levels = get_levels_list(self.url)['level']
         for level in levels:
             Transplant(send, Simplelog, url=self.url, method_name=level)
+
+    def get_owners(self):
+        response = requests.get(os.path.join(self.url + "/api/owners/"), timeout=CONNECTION_TIMEOUT)
+        if response.status_code == requests.codes.ok:
+            try:
+                result = response.json()
+            except ValueError, e:
+                print e
+            else:
+                return result
+        return None
+
+    def get_list(self, **kwargs):
+        params = dict()
+        if kwargs:
+            if 'find' in kwargs:
+                params['find'] = kwargs['find']
+            if 'sort' in kwargs:
+                params['sort'] = kwargs['sort']
+            if 'limit' in kwargs:
+                params['limit'] = kwargs['limit']
+            response = requests.post(os.path.join(self.url + "/api/list/"),
+                                     headers={'content-type': 'application/json'},
+                                     data=json.dumps(params, cls=APIEncoder),
+                                     timeout=CONNECTION_TIMEOUT)
+        else:
+            response = requests.get(os.path.join(self.url + "/api/list/"),
+                                    headers={'content-type': 'application/json'},
+                                    timeout=CONNECTION_TIMEOUT)
+        if response.status_code == requests.codes.ok:
+            try:
+                result = response.json()
+            except ValueError, e:
+                print e
+            else:
+                return result
+        return None
+
+    def count(self, **kwargs):
+        params = dict()
+        if kwargs:
+            if 'find' in kwargs:
+                params['find'] = kwargs['find']
+            if 'sort' in kwargs:
+                params['sort'] = kwargs['sort']
+            if 'limit' in kwargs:
+                params['limit'] = kwargs['limit']
+            response = requests.post(os.path.join(self.url + "/api/count/"),
+                                     headers={'content-type': 'application/json'},
+                                     data=json.dumps(params, cls=APIEncoder),
+                                     timeout=CONNECTION_TIMEOUT)
+        else:
+            response = requests.get(os.path.join(self.url + "/api/count/"),
+                                    headers={'content-type': 'application/json'},
+                                    timeout=CONNECTION_TIMEOUT)
+        if response.status_code == requests.codes.ok:
+            try:
+                result = response.json()
+            except ValueError, e:
+                print e
+            else:
+                return result
+        return None
 
 
 def send(self, owner, data, tags=[]):

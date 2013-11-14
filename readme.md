@@ -1,4 +1,4 @@
-Version: __0.1.1__
+Version: __0.2.2__
 
 About
 =====
