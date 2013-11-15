@@ -3,23 +3,26 @@
 import logging
 import urllib2
 import socket
-from pysimplelogs import Simplelog
+from pysimplelogs import Simplelog, requests
 
 
 class SimplelogHandler(logging.Handler):
 
-    def __init__(self, url, module_name):
+    def __init__(self, url, owner):
         logging.Handler.__init__(self)
         self.url = url
-        self.module_name = module_name
+        self.owner = owner
 
     def emit(self, record):
         message = self.format(record)
         client = Simplelog(self.url)
-        level = logging.getLevelName(self.level).lower()
+        level = record.levelname.lower()
         if not hasattr(client, level):
             level = 'debug'
-        getattr(client, level)(self.module_name, message, [self.module_name])
+        tags = list()
+        if hasattr(record, 'tags'):
+            tags = getattr(record, 'tags')
+        getattr(client, level)(self.owner, message, tags)
 
 
 class SimpleLogger(object):
@@ -27,11 +30,10 @@ class SimpleLogger(object):
     @classmethod
     def __check_url(cls, url):
         try:
-            if urllib2.urlopen(url, timeout=2).getcode() == 200:
+            r = requests.get('{0}/api/'.format(url), timeout=2)
+            if r.status_code == 200:
                 return True
-        except urllib2.URLError, e:
-            print u'Проблема с подключением к системе журналирования ({0})'.format(e)
-        except socket.timeout, e:
+        except requests.RequestException, e:
             print u'Проблема с подключением к системе журналирования ({0})'.format(e)
         return False
 
@@ -50,13 +52,13 @@ class SimpleLogger(object):
             sys.excepthook = log_except_hook
 
     @classmethod
-    def get_logger(cls, url, module_name, debug_mode=False):
+    def get_logger(cls, url, module_name, owner, debug_mode=False):
         _logger = logging.getLogger(module_name)
         _logger.setLevel(logging.DEBUG)
 
         if cls.__check_url(url):
             # create handler
-            handler = SimplelogHandler(url, module_name)
+            handler = SimplelogHandler(url, owner)
             # create formatter
             formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         else:
