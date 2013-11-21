@@ -95,7 +95,7 @@ class Transplant(object):
 def get_levels_list(url):
     """Returns levels from server or default-list if server is unavailable."""
     try:
-        levels = json.loads(requests.get(os.path.join(url + "/api/level/"), timeout=CONNECTION_TIMEOUT).content)
+        levels = json.loads(requests.get(os.path.join(url, "/api/level/"), timeout=CONNECTION_TIMEOUT).content)
     except:
         levels = {u'level': [u'critical', u'error', u'warning', u'notice', u'info', u'debug']}
     return levels
@@ -121,7 +121,7 @@ class Simplelog(object):
             Transplant(send, Simplelog, url=self.url, method_name=level)
 
     def get_owners(self):
-        response = requests.get(os.path.join(self.url + "/api/owners/"), timeout=CONNECTION_TIMEOUT)
+        response = requests.get(os.path.join(self.url, "/api/owners/"), timeout=CONNECTION_TIMEOUT)
         if response.status_code == requests.codes.ok:
             try:
                 result = response.json()
@@ -140,7 +140,7 @@ class Simplelog(object):
                 params['sort'] = kwargs['sort']
             if 'limit' in kwargs:
                 params['limit'] = kwargs['limit']
-            response = requests.post(os.path.join(self.url + "/api/list/"),
+            response = requests.post(os.path.join(self.url, "/api/list/"),
                                      headers={'content-type': 'application/json'},
                                      data=json.dumps(params, cls=APIEncoder),
                                      timeout=CONNECTION_TIMEOUT)
@@ -166,7 +166,7 @@ class Simplelog(object):
                 params['sort'] = kwargs['sort']
             if 'limit' in kwargs:
                 params['limit'] = kwargs['limit']
-            response = requests.post(os.path.join(self.url + "/api/count/"),
+            response = requests.post(os.path.join(self.url, "/api/count/"),
                                      headers={'content-type': 'application/json'},
                                      data=json.dumps(params, cls=APIEncoder),
                                      timeout=CONNECTION_TIMEOUT)
