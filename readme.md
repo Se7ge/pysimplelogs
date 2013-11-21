@@ -48,6 +48,24 @@ __Description__:
 What's new
 ==========
 
+__0.3.0__
+
+  * Logger class. Now you can use pysimplelogs like standard python logger.
+
+__0.2.3__
+
+  * Refactoring and bugfixes.
+
+__0.2.1__
+
+  * Added json-encoder for datetime objects serialization.
+  * Bugfixes.
+
+__0.2.0__
+
+  * Methods for getting data;
+  * Added requirements.txt.
+
 __0.1.1__
 
   * If server is not available, default levels list will be initialized:
