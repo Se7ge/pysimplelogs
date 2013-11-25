@@ -12,3 +12,10 @@ logger = SimpleLogger.get_logger(config.get('SIMPLELOGS_URL'),
                                  config.get('MODULE_NAME'),
                                  config.get('OWNER'),
                                  config.get('DEBUG'))
+
+try:
+    raise ValueError('Raised ValueError')
+except ValueError, e:
+    logger.error(u'Ошибка приложения: {0}'.format(e),
+                 extra=dict(tags=[u'проверка логгера', 'elreg']))
+    # теги отправляем через параметр extra
