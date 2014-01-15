@@ -32,7 +32,7 @@ class SimpleLogger(object):
             if r.status_code == 200:
                 return True
         except requests.RequestException, e:
-            print u'Проблема с подключением к системе журналирования ({0})'.format(e)
+            print u'Couldn\'t connect to simplelogs ({0})'.format(e)
         return False
 
     @classmethod
