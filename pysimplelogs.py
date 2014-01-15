@@ -120,14 +120,18 @@ class Simplelog(object):
             Transplant(send, Simplelog, url=self.url, method_name=level)
 
     def get_owners(self):
-        response = requests.get(self.url + "/api/owners/", timeout=CONNECTION_TIMEOUT)
-        if response.status_code == requests.codes.ok:
-            try:
-                result = response.json()
-            except ValueError, e:
-                print e
-            else:
-                return result
+        try:
+            response = requests.get(self.url + "/api/owners/", timeout=CONNECTION_TIMEOUT)
+        except requests.ConnectionError, e:
+            print e
+        else:
+            if response.status_code == requests.codes.ok:
+                try:
+                    result = response.json()
+                except ValueError, e:
+                    print e
+                else:
+                    return result
         return None
 
     def get_list(self, **kwargs):
@@ -139,14 +143,22 @@ class Simplelog(object):
                 params['sort'] = kwargs['sort']
             if 'limit' in kwargs:
                 params['limit'] = kwargs['limit']
-            response = requests.post(self.url + "/api/list/",
-                                     headers={'content-type': 'application/json'},
-                                     data=json.dumps(params, cls=APIEncoder),
-                                     timeout=CONNECTION_TIMEOUT)
+            try:
+                response = requests.post(self.url + "/api/list/",
+                                         headers={'content-type': 'application/json'},
+                                         data=json.dumps(params, cls=APIEncoder),
+                                         timeout=CONNECTION_TIMEOUT)
+            except requests.ConnectionError, e:
+                print e
+                return None
         else:
-            response = requests.get(self.url + "/api/list/",
-                                    headers={'content-type': 'application/json'},
-                                    timeout=CONNECTION_TIMEOUT)
+            try:
+                response = requests.get(self.url + "/api/list/",
+                                        headers={'content-type': 'application/json'},
+                                        timeout=CONNECTION_TIMEOUT)
+            except requests.ConnectionError, e:
+                print e
+                return None
         if response.status_code == requests.codes.ok:
             try:
                 result = response.json()
@@ -165,14 +177,22 @@ class Simplelog(object):
                 params['sort'] = kwargs['sort']
             if 'limit' in kwargs:
                 params['limit'] = kwargs['limit']
-            response = requests.post(self.url + "/api/count/",
-                                     headers={'content-type': 'application/json'},
-                                     data=json.dumps(params, cls=APIEncoder),
-                                     timeout=CONNECTION_TIMEOUT)
+            try:
+                response = requests.post(self.url + "/api/count/",
+                                         headers={'content-type': 'application/json'},
+                                         data=json.dumps(params, cls=APIEncoder),
+                                         timeout=CONNECTION_TIMEOUT)
+            except requests.ConnectionError, e:
+                print e
+                return None
         else:
-            response = requests.get(self.url + "/api/count/",
-                                    headers={'content-type': 'application/json'},
-                                    timeout=CONNECTION_TIMEOUT)
+            try:
+                response = requests.get(self.url + "/api/count/",
+                                        headers={'content-type': 'application/json'},
+                                        timeout=CONNECTION_TIMEOUT)
+            except requests.ConnectionError, e:
+                print e
+                return None
         if response.status_code == requests.codes.ok:
             try:
                 result = response.json()
