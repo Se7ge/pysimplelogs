@@ -12,7 +12,7 @@ from config import SLEEP_TIME, NUMBER_OF_ATTEMPTS, CONNECTION_TIMEOUT
 class APIEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime):
-            return obj.strftime("%Y-%m-%d %H:%m:%s")
+            return obj.strftime("%Y-%m-%d %H:%M:%S")
         elif isinstance(obj, date):
             return date.strftime(obj, "%Y-%m-%d")
         else:
