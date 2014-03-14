@@ -143,6 +143,8 @@ class Simplelog(object):
                 params['sort'] = kwargs['sort']
             if 'limit' in kwargs:
                 params['limit'] = kwargs['limit']
+            if 'skip' in kwargs:
+                params['skip'] = kwargs['skip']
             try:
                 response = requests.post(self.url + "/api/list/",
                                          headers={'content-type': 'application/json'},
