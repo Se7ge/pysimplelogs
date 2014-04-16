@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 
 import multiprocessing
-import requests
 import time
 import json
 import os
 from datetime import datetime, date
+
+import requests
 
 from config import SLEEP_TIME, NUMBER_OF_ATTEMPTS, CONNECTION_TIMEOUT
 
