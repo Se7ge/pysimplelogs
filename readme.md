@@ -48,6 +48,11 @@ __Description__:
 What's new
 ==========
 
+__0.3.1__
+
+  * Fix in datetime JSONEncoding,
+  * Added skip parameter for possibility to use pagination.
+
 __0.3.0__
 
   * Logger class. Now you can use pysimplelogs like standard python logger.
