@@ -1,4 +1,4 @@
-Version: __0.3.0__
+Version: __0.3.2__
 
 About
 =====
@@ -47,6 +47,15 @@ __Description__:
 
 What's new
 ==========
+
+__0.3.2__
+
+  * If asynchronous send not allowed, make the synchronous one.
+
+__0.3.1__
+
+  * Fix in datetime JSONEncoding,
+  * Added skip parameter for possibility to use pagination.
 
 __0.3.0__
 
